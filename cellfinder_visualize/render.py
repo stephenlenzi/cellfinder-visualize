@@ -46,8 +46,10 @@ def render_areas(
     scene = Scene(title="labelled cells", root=root)
 
     cells_group_a = load_cells_in_group(points_files_a, subsample_factor)
-    cells_group_b = load_cells_in_group(points_files_b, subsample_factor)
-
+    if points_files_b is not None:
+        cells_group_b = load_cells_in_group(points_files_b, subsample_factor)
+    else:
+        cells_group_b = None
     if slice_root:
         regions_rendered.append(scene.root)
 
@@ -65,9 +67,10 @@ def render_areas(
         render_cells_in_region(
             cells_group_a, scene.root, regions_rendered, scene, color="k"
         )
-        render_cells_in_region(
-            cells_group_b, scene.root, regions_rendered, scene, color="r"
-        )
+        if cells_group_b is not None:
+            render_cells_in_region(
+                cells_group_b, scene.root, regions_rendered, scene, color="r"
+            )
         regions = render_regions(
             colors, region_keys, scene, hemisphere=hemisphere
         )
@@ -87,9 +90,10 @@ def render_areas(
         regions_rendered = render_cells_in_regions(
             cells_group_a, regions, regions_rendered, scene, color="k"
         )
-        regions_rendered = render_cells_in_regions(
-            cells_group_b, regions, regions_rendered, scene, color="r"
-        )
+        if cells_group_b is not None:
+            regions_rendered = render_cells_in_regions(
+                cells_group_b, regions, regions_rendered, scene, color="r"
+            )
 
     if additional_obj_files is not None:
         for fpath in additional_obj_files:
