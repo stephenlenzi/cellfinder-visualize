@@ -17,12 +17,14 @@ def get_n_cells_in_region(
 ):
     structure_acronyms = atlas.get_structure_descendants(key)
     structure_names = [atlas.structures[k]["name"] for k in structure_acronyms]
+    structure_names.append(atlas.structures[key]["name"])
     total = 0
     total_volume = 0
 
     sum_key, volume_key = get_lateralisation_keys(lateralisation)
 
     for structure_name in list(structure_names):
+
         child_result_row = df_results[
             df_results["structure_name"] == structure_name
         ]
@@ -36,6 +38,10 @@ def get_n_cells_in_region(
                 f"{key} found to be {total}.. "
                 f"total per mm {total/total_volume}"
             )
+
+            print(f"counted {count} cells in {structure_name}, {sum_key} in "
+                f"{key} found to be {total}.. "
+                f"total per mm {total/total_volume}")
     return total, total_volume
 
 
