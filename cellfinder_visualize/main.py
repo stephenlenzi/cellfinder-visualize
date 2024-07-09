@@ -164,7 +164,7 @@ def analyse(
 
 
 def is_cellfinder_path(p):
-    return len(list(p.glob("cellfinder.json"))) > 0
+    return (len(list(p.glob("cellfinder.json")))  + len(list(p.glob("brainmapper.json")))) > 0
 
 
 @analyse.experiment_dir.changed.connect
