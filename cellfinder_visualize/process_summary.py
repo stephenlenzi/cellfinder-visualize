@@ -272,8 +272,8 @@ def plot_boxplots(df_group_a, df_group_b, metric, label, region_labels_in_order=
 
 
 def plot_cellfinder_bar_summary(
-    group_a_filepaths,
-    group_b_filepaths,
+    group_a,
+    group_b,
     plotting_keys,
     reference_structure_key,
     output_directory,
@@ -287,6 +287,9 @@ def plot_cellfinder_bar_summary(
     atlas = bg_atlasapi.BrainGlobeAtlas(atlas_name)
     dfs_all = []
     colors_palette = sns.set_palette(sns.color_palette(colors))
+    group_a_filepaths = group_a["summary"] if group_a is not None else None
+    group_b_filepaths = group_b["summary"] if group_b is not None else None
+
     for experiment_filepaths in [group_a_filepaths, group_b_filepaths]:
         group_dfs = []
         if experiment_filepaths is not None:

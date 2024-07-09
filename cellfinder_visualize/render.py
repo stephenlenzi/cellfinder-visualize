@@ -20,11 +20,10 @@ from cellfinder_visualize.rendering_functions import (
 
 
 def render_areas(
-    points_files_a,
-    points_files_b,
+    group_a,
+    group_b,
     region_keys,
     colors,
-    additional_obj_files=None,
     filter_cells_by_structure=False,
     coronal_slice=None,
     slice_thickness=None,
@@ -45,9 +44,10 @@ def render_areas(
     regions_rendered = []
     scene = Scene(title="labelled cells", root=root)
 
-    cells_group_a = load_cells_in_group(points_files_a, subsample_factor)
-    if points_files_b is not None:
-        cells_group_b = load_cells_in_group(points_files_b, subsample_factor)
+    cells_group_a = load_cells_in_group(group_a["points"], subsample_factor)
+    if group_b is not None:
+        print(f"points b {group_b['points']}")
+        cells_group_b = load_cells_in_group(group_b["points"], subsample_factor)
     else:
         cells_group_b = None
     if slice_root:
@@ -95,8 +95,8 @@ def render_areas(
                 cells_group_b, regions, regions_rendered, scene, color="r"
             )
 
-    if additional_obj_files is not None:
-        for fpath in additional_obj_files:
+    if group_a["renderable objects"] is not None:
+        for fpath in group_a["renderable objects"]:
             color = "b" if "fiber" in str(fpath) else additional_obj_color
             r = scene.add(fpath, color=color)
             regions_rendered.append(r)

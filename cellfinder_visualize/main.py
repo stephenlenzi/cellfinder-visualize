@@ -27,6 +27,18 @@ class ShaderStyle(Enum):
     glossy = "glossy"
 
 
+def initialise_groups():
+    analyse.group_a = {}
+    analyse.group_a.setdefault("renderable objects", [])
+    analyse.group_a.setdefault("points", [])
+    analyse.group_a.setdefault("summary", [])
+
+    analyse.group_b = {}
+    analyse.group_b.setdefault("renderable objects", [])
+    analyse.group_b.setdefault("points", [])
+    analyse.group_b.setdefault("summary", [])
+
+
 @magicgui(
     experiment_dir={"mode": "d"},
     output_dir={"mode": "d"},
@@ -118,6 +130,7 @@ def analyse(
     directory tree will be rendered.
     :return:
     """
+
     atlas_name = "allen_mouse_10um"
     camera = {
         "pos": camera_pos,
@@ -125,14 +138,14 @@ def analyse(
         "clippingRange": camera_clipping_range,
     }
     if brainrender:
+
         p = Process(
             target=render_areas,
             args=(
-                analyse.group_a["points"],
-                analyse.group_b["points"],
+                analyse.group_a,
+                analyse.group_b,
                 region_list,
                 colors,
-                analyse.group_a["renderable objects"],
                 filter_cells_by_structure,
                 coronal_slice_start,
                 coronal_slice_end,
@@ -150,8 +163,8 @@ def analyse(
         p.start()
 
     plot_cellfinder_bar_summary(
-        analyse.group_a["summary"],
-        analyse.group_b["summary"],
+        analyse.group_a,
+        analyse.group_b,
         region_list,
         reference_region,
         output_dir,
@@ -169,6 +182,8 @@ def is_cellfinder_path(p):
 
 @analyse.experiment_dir.changed.connect
 def load_all_samples():
+    analyse.group_a  = None
+    analyse.group_b  = None
     p = analyse.experiment_dir.value
     paths = list(p.glob("*"))
     cellfinder_paths = [p for p in paths if is_cellfinder_path(p)]
@@ -217,10 +232,11 @@ def get_file_paths_for_group(widget):
         all_summary_files.extend(p.rglob("*summary*.csv"))
         all_points_files.extend(p.rglob("*points*npy"))
         render_files.extend(p.rglob("*.obj"))
+
     group_dict = {}
-    group_dict.setdefault("summary", all_summary_files)
-    group_dict.setdefault("points", all_points_files)
-    group_dict.setdefault("renderable objects", render_files)
+    group_dict["summary"] = all_summary_files
+    group_dict["points"] = all_points_files
+    group_dict["renderable objects"] = render_files
     return group_dict
 
 
